@@ -1020,7 +1020,7 @@
                 {
                     "name": "",
                     "id": "67bf9bb2-7e29-4c6b-8c76-66f404c1381f",
-                    "path": "",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1031,7 +1031,7 @@
                 {
                     "name": "",
                     "id": "5bed75ef-30af-411a-a301-3c06ad35f769",
-                    "path": "",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1042,7 +1042,7 @@
                 {
                     "name": "",
                     "id": "f2be4c13-bd3f-4ed4-aa28-59b53675a803",
-                    "path": "",
+                    "path": "<Keyboard>/alt",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

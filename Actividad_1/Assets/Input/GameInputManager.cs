@@ -34,6 +34,8 @@ public class GameInputManager : MonoBehaviour
 
     private void OnPauseInput(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Pause input received");
+
         if (UIManager.instance == null)
         {
             GameManager.instance?.GamePause();
@@ -59,6 +61,7 @@ public class GameInputManager : MonoBehaviour
 
         GameManager.instance?.GamePause();
     }
+
     public void ShowCursor(bool show)
     {
         if (GameManager.instance == null || UIManager.instance == null) return;

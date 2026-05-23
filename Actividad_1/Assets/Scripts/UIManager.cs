@@ -16,11 +16,11 @@ public class UIManager : MonoBehaviour
     public GameObject warningPanel;
     public GameObject securityPanel;
     public GameObject interactionPanel;
+    public CanvasGroup tutorialPanel;
+    public bool tutorialShown;
     public List<Image> Selected;
     public TextMeshProUGUI confirmText;
     public TextMeshProUGUI warningText;
-
-
 
     [Header("UI Setting")]
     public bool showCursor = false;
@@ -109,6 +109,25 @@ public class UIManager : MonoBehaviour
         foreach (var item in Selected)
             item.enabled = state;
 
+    }
+
+    public void ShowTutorial()
+    {
+        if (tutorialShown == true) return;
+
+        tutorialShown = true; // Asegura que solo pase una vez
+
+        // Secuencia de animación
+        tutorialPanel.gameObject.SetActive(true);
+        tutorialPanel.alpha = 0; // Empezar invisible
+
+        // Fade In
+        tutorialPanel.DOFade(1f, 1f).OnComplete(() => {
+            // Esperar 4 segundos visible y luego hacer Fade Out
+            tutorialPanel.DOFade(0f, 1.5f)
+                .SetDelay(4f)
+                .OnComplete(() => tutorialPanel.gameObject.SetActive(false));
+        });
     }
 
     // -------------------------

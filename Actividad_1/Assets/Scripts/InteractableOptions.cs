@@ -26,7 +26,7 @@ public class InteractableOptions : MonoBehaviour
     public int ID;
 
     [Tooltip("Si está en FALSE, el objeto no será destruido al seleccionar")]
-    public bool destroyOnSelect = true;
+    public bool destroyOnSelect = false;
 
     public InteractionType InteractionTypes => interactionTypes;
     private void Start()

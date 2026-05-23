@@ -38,7 +38,8 @@ public class GameManager : MonoBehaviour
         {
             fadeImage.color = fadeColor;
             fadeCanvasGroup.alpha = 1f;
-            StartFadeIn();
+            StartFadeIn(() => {
+            });
         }
 
         Invoke(nameof(GameStart), 0.2f);

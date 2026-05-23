@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
+        UIManager.instance.showCursor = false;
     }
 
     private void OnEnable()
