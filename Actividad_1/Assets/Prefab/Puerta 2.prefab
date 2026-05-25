@@ -147,7 +147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a556f6b45573444ab5d1c4c21011ac3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a556f6b45573444ab5d1c4c21011ac3, type: 3}
       propertyPath: m_LocalScale.z
@@ -281,6 +281,7 @@ MonoBehaviour:
   type: 0
   isOpen: 0
   closeDelay: 0
+  Sound: {fileID: 8300000, guid: 5ddfa31ddd2f6004b8313c08c2276abe, type: 3}
 --- !u!4 &4260071618685683940 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7a556f6b45573444ab5d1c4c21011ac3, type: 3}

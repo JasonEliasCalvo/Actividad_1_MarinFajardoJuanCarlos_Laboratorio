@@ -9,7 +9,6 @@ public class InteractableOptionsEditor : Editor
     private SerializedProperty endEventProp;
     private SerializedProperty destroyProp;
 
-
     private void OnEnable()
     {
         if (serializedObject == null) return;
@@ -36,6 +35,7 @@ public class InteractableOptionsEditor : Editor
 
         var interactionValue = (InteractionType)interactionTypesProp.intValue;
 
+        // Mostrar eventos si InvokeEvent está activo
         if (interactionValue.HasFlag(InteractionType.InvokeEvent))
         {
             EditorGUILayout.Space(5);
@@ -53,9 +53,15 @@ public class InteractableOptionsEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
 
+        // Feedbacks informativos en el Inspector
         if (interactionValue.HasFlag(InteractionType.InvokeEvent))
         {
             EditorGUILayout.HelpBox("La opción 'InvokeEvent' requiere que se asignen eventos para interacción inicial y final.", MessageType.Info);
+        }
+
+        if (interactionValue.HasFlag(InteractionType.GrabAndDrop))
+        {
+            EditorGUILayout.HelpBox("La opción 'GrabAndDrop' interactuarà directamente con el PlayerController para agarrar/soltar este objeto de forma nativa.", MessageType.Info);
         }
     }
 }

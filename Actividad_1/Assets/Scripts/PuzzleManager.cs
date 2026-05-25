@@ -1,34 +1,66 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PuzzleManager : MonoBehaviour
 {
     public static PuzzleManager instance;
 
     [Header("Estado de la Misión")]
-    [SerializeField] private int totalGearsRequired = 3;
-    private int currentGearsCollected = 0;
+    [SerializeField] private int totalTanksToRestore = 3; // En image_f781a6.png se ven 3 rojos y 2 azules de base
+    private int currentTanksRestored = 0;
+
+    public UnityEvent TankRestored;
+    public UnityEvent StationCalibrated;
+    public UnityEvent CoreStabilized;
+
     private bool stationCalibrated = false;
     private bool coreStabilized = false;
 
+    [Header("Tarjet")]
+    public GameObject cardPrefab;
+    public GameObject playerPrefab;
+    public GameObject cardInteractCollider;
+
     [Header("Referencias de la Escena")]
-    public GameObject escapeDoorCollider;
     public ParticleSystem coreParticles;
+    [SerializeField] private Renderer coreRenderer; // El MeshRenderer del tanque completo
+    [SerializeField] private Material blueMaterial;       // El material que quieres aplicar
+    [SerializeField] private int materialIndexToReplace = 1;
 
     private void Awake()
     {
         if (instance == null) instance = this;
     }
 
-    // Llamado por el evento OnInteract de los engranajes recolectables en Sala 1
-    public void CollectGear()
+    public void Update()
     {
-        currentGearsCollected++;
-        Debug.Log($"Engranaje recolectado: {currentGearsCollected}/{totalGearsRequired}");
+        if (cardPrefab != null && playerPrefab != null && cardInteractCollider != null && currentTanksRestored >= totalTanksToRestore)
+        {
+            if (cardPrefab.activeInHierarchy && cardPrefab.transform.IsChildOf(playerPrefab.transform))
+            {
+                cardInteractCollider.SetActive(true);
+            }
+            else
+            {
+                cardInteractCollider.SetActive(false);
+            }
+        }
+    }
 
-        if (currentGearsCollected >= totalGearsRequired)
+    public void RestoreTank()
+    {
+        currentTanksRestored++;
+        Debug.Log($"Tanque restaurado: {currentTanksRestored}/{totalTanksToRestore}");
+
+        if (currentTanksRestored >= totalTanksToRestore)
         {
             if (UIManager.instance != null)
-                UIManager.instance.ShowInteractPanel(false); // Feedback visual rápido
+                UIManager.instance.ShowConfirmPanelOn("¡Tanques restaurados! La tarjeta de calibrado ha aparecido en la consola del Laboratorio.");
+
+            TankRestored?.Invoke();
+            if (UIManager.instance != null)
+                UIManager.instance.ShowInteractPanel(false);
         }
     }
 
@@ -36,33 +68,50 @@ public class PuzzleManager : MonoBehaviour
     public void CalibrateStation()
     {
         stationCalibrated = true;
+
+        if (UIManager.instance != null)
+            UIManager.instance.ShowConfirmPanelOn("¡Estacion calibrada puedes estabilizar el nucleo!");
+
         Debug.Log("Estación Maestra Calibrada Correctamente.");
     }
 
     // Llamado por el evento OnInteract del panel del Núcleo de Sabiduría (Sala 3)
     public void TryStabilizeCore()
     {
-        if (currentGearsCollected >= totalGearsRequired && stationCalibrated)
+        if (currentTanksRestored >= totalTanksToRestore && stationCalibrated)
         {
             coreStabilized = true;
             if (coreParticles != null)
             {
                 var main = coreParticles.main;
-                main.startColor = Color.cyan; // El núcleo cambia de color peligroso (naranja) a estable (azul)
+                main.startColor = Color.cyan;
             }
 
-            // Abrir salida
-            if (escapeDoorCollider != null)
-                escapeDoorCollider.SetActive(false);
+            if (coreRenderer != null && blueMaterial != null)
+            {
+                Material[] currentMaterials = coreRenderer.materials;
+
+                if (materialIndexToReplace >= 0 && materialIndexToReplace < currentMaterials.Length)
+                {
+                    currentMaterials[materialIndexToReplace] = blueMaterial;
+                    coreRenderer.materials = currentMaterials;
+                    Debug.Log($"Material del núcleo estabilizado reemplazado correctamente en el índice {materialIndexToReplace}.");
+                }
+                else
+                {
+                    Debug.LogError($"El índice {materialIndexToReplace} está fuera de los límites en el MeshRenderer de {gameObject.name}. Comprueba cuántos materiales tiene asignados.");
+                }
+            }
 
             if (UIManager.instance != null)
-                UIManager.instance.ShowConfirmPanelOn("¡Núcleo Estabilizado! La puerta de escape está abierta. ¡CORRE!");
+                UIManager.instance.ShowConfirmPanelOn("¡Núcleo Estabilizado! La puerta de escape de Caprine Labs está abierta. ¡CORRE!");
+
+            CoreStabilized?.Invoke();
         }
         else
         {
-            // Si el jugador intenta activarlo sin cumplir los requisitos
             string missingConfig = "";
-            if (currentGearsCollected < totalGearsRequired) missingConfig += "- Faltan Engranajes de Inteligencia.\n";
+            if (currentTanksRestored < totalTanksToRestore) missingConfig += $"- Faltan restaurar {totalTanksToRestore - currentTanksRestored} Tanques de Cultivo.\n";
             if (!stationCalibrated) missingConfig += "- Estación Maestra Descalibrada.\n";
 
             if (UIManager.instance != null)
@@ -70,15 +119,12 @@ public class PuzzleManager : MonoBehaviour
         }
     }
 
-    // Llamado por el Trigger final al cruzar la puerta de salida
     public void EscapeSuccess()
     {
-        if (!coreStabilized) return;
-
         GameManager.instance.GameEnd();
         if (UIManager.instance != null)
         {
-            UIManager.instance.ShowConfirmPanelOn("¡VICTORIA!\nHas escapado de Caprine Labs a salvo.");
+            UIManager.instance.ShowConfirmPanelOn("¡VICTORIA!\nHas escapado del laboratorio a salvo.");
             UIManager.instance.ShowCursor(true);
         }
     }

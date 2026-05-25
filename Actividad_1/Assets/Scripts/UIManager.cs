@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     public GameObject warningPanel;
     public GameObject securityPanel;
     public GameObject interactionPanel;
+    public GameObject dropPanel;
     public CanvasGroup tutorialPanel;
     public bool tutorialShown;
     public List<Image> Selected;
@@ -130,6 +131,10 @@ public class UIManager : MonoBehaviour
         });
     }
 
+    public void ShowDropPanel(bool state)
+    {
+        dropPanel.SetActive(state);
+    }
     // -------------------------
     // Helpers
     // -------------------------

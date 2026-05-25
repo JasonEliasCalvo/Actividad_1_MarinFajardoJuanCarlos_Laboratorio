@@ -4,6 +4,7 @@ using UnityEngine.Events;
 public class TriggerZone : MonoBehaviour
 {
     public string interactionTag;
+    public bool destroyAfterTrigger = false;
 
     [Space(20)]
 
@@ -15,6 +16,10 @@ public class TriggerZone : MonoBehaviour
     {
         if (other.CompareTag(interactionTag))
         {
+            if (destroyAfterTrigger)
+            {
+                Destroy(other.gameObject);
+            }
             onTriggerEnter.Invoke();
         }
     }

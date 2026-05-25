@@ -12,6 +12,7 @@ public class Door : MovableObject
     [SerializeField] private DoorType type = DoorType.Sliding;
     [SerializeField] private bool isOpen = false;
     [SerializeField] private float closeDelay = 0f;
+    [SerializeField] private AudioClip Sound;
 
     private void Start()
     {
@@ -81,6 +82,10 @@ public class Door : MovableObject
         isOpen = !isOpen;
         UpdateTarget();
         StartMoving();
+        if (Sound != null)
+        {
+            AudioManager.Instance.PlaySound(Sound);
+        }
     }
 
     public void OpenDoor()
@@ -90,6 +95,11 @@ public class Door : MovableObject
         isOpen = true;
         UpdateTarget();
         StartMoving();
+
+        if (Sound != null)
+        {
+            AudioManager.Instance.PlaySound(Sound);
+        }
     }
 
     public void CloseDoor()
@@ -98,6 +108,11 @@ public class Door : MovableObject
         isOpen = false;
         UpdateTarget();
         StartMoving();
+
+        if (Sound != null)
+        {
+            AudioManager.Instance.PlaySound(Sound);
+        }
     }
 
     private void UpdateTarget()

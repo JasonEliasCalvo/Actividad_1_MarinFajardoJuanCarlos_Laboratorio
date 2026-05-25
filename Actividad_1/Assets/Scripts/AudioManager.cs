@@ -7,9 +7,10 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     [SerializeField]
-    private AudioMixerGroup masterGroup;
-    [SerializeField]
     public AudioSource sfx, music, voice;
+
+    public AudioClip interactSound;
+    public AudioClip failInteractSound;
 
     private void Awake()
     {
@@ -28,6 +29,17 @@ public class AudioManager : MonoBehaviour
         sfx.PlayOneShot(clip);
     }
 
+    public void PlayFailSound()
+    {
+        Debug.Log("Playing fail sound");
+        PlaySound(failInteractSound);
+    }
+
+    public void PLayInteractSound()
+    {
+        Debug.Log("Playing interact sound");
+        PlaySound(interactSound);
+    }
     public void PlayLoopSound(AudioClip sound)
     {
         sfx.clip = sound;

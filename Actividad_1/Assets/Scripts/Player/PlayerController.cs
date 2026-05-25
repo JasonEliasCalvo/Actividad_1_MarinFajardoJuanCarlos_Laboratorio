@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode runKey = KeyCode.LeftShift;
     private bool isRunning = false;
 
-    [SerializeField] private bool movementState;
+    public bool movementState;
 
     [Header("Ajustes de Cámara")]
     public Vector2 sensitivity = new Vector2(1f, 0.7f);
@@ -25,7 +26,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform handParent;
     [SerializeField] private Transform dropPoint;
     [HideInInspector] public bool isGrabbed = false;
-    private GameObject currentGrab;
     private Rigidbody rbGrab;
 
     private Camera cam;
@@ -37,8 +37,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;
     private float currentCameraY;
 
-    public GameObject CurrentGrab { get => currentGrab; set => currentGrab = value; }
-
+    public GameObject CurrentGrab; // Propiedad limpia
     // -------------------------
     // Ciclo de vida
     // -------------------------
@@ -47,12 +46,12 @@ public class PlayerController : MonoBehaviour
         chController = GetComponent<CharacterController>();
         instance = this;
         inputActions = new PlayerInputActions();
+        instance = this;
     }
 
     private void Start()
     {
         cam = Camera.main;
-        UIManager.instance.showCursor = false;
     }
 
     private void OnEnable()
@@ -159,10 +158,70 @@ public class PlayerController : MonoBehaviour
     // -------------------------
     // Interacciones (inputs)
     // -------------------------
-
-    private void OnDropInput(InputAction.CallbackContext ctx)
+   
+    public void ClearCurrentGrabReference()
     {
+        isGrabbed = false;
+        CurrentGrab = null;
+        rbGrab = null;
 
+        if (UIManager.instance != null) UIManager.instance.ShowDropPanel(false);
+        Debug.Log("Referencia de objeto agarrado limpiada.");
+    }
+
+    public void HandleGrab(GameObject _object)
+    {
+        if (_object == null) return;
+
+        if (isGrabbed)
+            StartCoroutine(DropAndGrabNext(_object));
+        else
+            Grab(_object);
+    }
+
+    private void Grab(GameObject obj)
+    {
+        isGrabbed = true;
+        CurrentGrab = obj;
+        rbGrab = CurrentGrab.GetComponent<Rigidbody>();
+
+        if (rbGrab != null)
+        {
+            rbGrab.isKinematic = true;
+        }
+
+        if (handParent != null)
+        {
+            CurrentGrab.transform.SetParent(handParent);
+            CurrentGrab.transform.localPosition = Vector3.zero;
+            CurrentGrab.transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    private IEnumerator DropAndGrabNext(GameObject newObject)
+    {
+        isGrabbed = false;
+
+        if (CurrentGrab != null)
+        {
+            CurrentGrab.transform.SetParent(null);
+        }
+
+        if (rbGrab != null)
+        {
+            rbGrab.isKinematic = false;
+
+            if (dropPoint != null && CurrentGrab != null)
+            {
+                CurrentGrab.transform.position = dropPoint.position;
+                CurrentGrab.transform.position += transform.right * Random.Range(-0.2f, 0.2f);
+            }
+            rbGrab.AddForce((transform.forward + Vector3.up * 0.2f) * 2f, ForceMode.Impulse);
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        Grab(newObject);
     }
 
     // -------------------------

@@ -238,6 +238,7 @@ MonoBehaviour:
   type: 1
   isOpen: 0
   closeDelay: 0
+  Sound: {fileID: 0}
 --- !u!114 &7953042194159888532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ad18b9454f9fd4b8d57d911daf4d34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableOptions
-  interactionTypes: -1
+  interactionTypes: 1
   justOneInteraction: 0
   canInteract: 1
   onInteract:
@@ -271,9 +272,6 @@ MonoBehaviour:
   endInteract:
     m_PersistentCalls:
       m_Calls: []
-  selectecObject: {fileID: 0}
-  itemName: 
-  ID: 0
   destroyOnSelect: 0
 --- !u!1001 &5736029595534171113
 PrefabInstance:

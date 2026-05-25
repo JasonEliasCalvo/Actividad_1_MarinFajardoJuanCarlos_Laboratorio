@@ -7,32 +7,20 @@ public class GameplayTimer : MonoBehaviour
     [SerializeField] private float timeRemaining = 300f; // 5 Minutos para la Jam
     [SerializeField] private TextMeshProUGUI timerText; // Arrastra un TextMeshPro aquí
 
-    private bool isTimerRunning = false;
-
-    private void OnEnable()
-    {
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.eventGameStart += StartTimer;
-            GameManager.instance.eventGameEnd += StopTimer;
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.eventGameStart -= StartTimer;
-            GameManager.instance.eventGameEnd -= StopTimer;
-        }
-    }
+    public bool isTimerRunning = false;
 
     private void StartTimer() => isTimerRunning = true;
     private void StopTimer() => isTimerRunning = false;
 
     private void Update()
     {
+        if(PlayerController.instance == null) return;
+
+        isTimerRunning = PlayerController.instance.movementState;
+
         if (!isTimerRunning) return;
+
+        if (UIManager.instance != null && UIManager.instance.IsPanelActive()) return;
 
         if (timeRemaining > 0)
         {
@@ -54,7 +42,6 @@ public class GameplayTimer : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
-        // Feedback visual: Si queda menos de 1 minuto, poner texto en rojo
         if (timeToDisplay <= 60f)
         {
             timerText.color = Color.red;
@@ -63,12 +50,17 @@ public class GameplayTimer : MonoBehaviour
 
     private void TriggerDefeat()
     {
-        // Bloquea juego y manda el panel de Warning o un panel custom de Game Over
         GameManager.instance.GameEnd();
         if (UIManager.instance != null)
         {
             UIManager.instance.ShowWarningPanelOn("¡EL NÚCLEO HA COLAPSADO!\nInstalación destruida.");
+            Invoke(nameof(GameEnd), 0.2f);
             UIManager.instance.ShowCursor(true);
         }
+    }
+
+    public void GameEnd()
+    {
+        GameManager.instance.LoadScene(0);
     }
 }

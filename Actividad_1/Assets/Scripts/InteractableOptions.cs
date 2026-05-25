@@ -8,6 +8,7 @@ public enum InteractionType
 {
     None = 0,
     InvokeEvent = 1 << 0,
+    GrabAndDrop = 1 << 1, // <- Nueva opción
 }
 
 public class InteractableOptions : MonoBehaviour
@@ -20,15 +21,11 @@ public class InteractableOptions : MonoBehaviour
     public UnityEvent onInteract;
     public UnityEvent endInteract;
 
-    [Header("Configuración de Interacción")]
-    public GameObject selectecObject;
-    public string itemName;
-    public int ID;
-
     [Tooltip("Si está en FALSE, el objeto no será destruido al seleccionar")]
     public bool destroyOnSelect = false;
 
     public InteractionType InteractionTypes => interactionTypes;
+
     private void Start()
     {
         player = FindAnyObjectByType<PlayerController>();
@@ -36,12 +33,16 @@ public class InteractableOptions : MonoBehaviour
 
     public void TryInteract()
     {
-        if (!canInteract) return;
+        if (!canInteract) {
+            AudioManager.Instance.PlayFailSound();
+            return;
+        }
 
         if (justOneInteraction)
         {
             canInteract = false;
         }
+        AudioManager.Instance.PLayInteractSound();
         ExecuteInteraction();
     }
 
@@ -68,10 +69,22 @@ public class InteractableOptions : MonoBehaviour
                 case InteractionType.InvokeEvent:
                     onInteract?.Invoke();
                     break;
+
+                case InteractionType.GrabAndDrop:
+                    if (player != null)
+                    {
+                        player.HandleGrab(gameObject);
+                    }
+                    break;
             }
         }
 
+        // Evitamos destruir el objeto si lo queremos agarrar
+        Destroy();
+    }
 
+    public void Destroy()
+    {
         if (destroyOnSelect)
         {
             Destroy(gameObject);
@@ -86,6 +99,9 @@ public class InteractableOptions : MonoBehaviour
             {
                 case InteractionType.InvokeEvent:
                     endInteract?.Invoke();
+                    break;
+
+                case InteractionType.GrabAndDrop:
                     break;
             }
         }
