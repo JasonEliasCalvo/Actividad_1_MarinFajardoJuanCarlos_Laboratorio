@@ -3,12 +3,12 @@ using UnityEngine;
 public class PotionTankTrigger : MonoBehaviour
 {
     [Header("Configuración del Filtro")]
-    [SerializeField] private string potionTag = "Potion"; // Tag de las pociones
+    [SerializeField] private string potionTag;
+    [SerializeField] private AudioClip restoreSound;
 
     [Header("Referencias Visuales")]
-    [SerializeField] private Renderer tankLiquidRenderer; // El MeshRenderer del tanque completo
-    [SerializeField] private Material blueMaterial;       // El material que quieres aplicar
-    [Tooltip("El índice del material en el MeshRenderer. 0 es el primero, 1 el segundo, 2 el tercero, etc.")]
+    [SerializeField] private Renderer tankLiquidRenderer;
+    [SerializeField] private Material blueMaterial;
     [SerializeField] private int materialIndexToReplace = 2; 
 
     [Header("Estado")]
@@ -53,6 +53,12 @@ public class PotionTankTrigger : MonoBehaviour
         if (PuzzleManager.instance != null)
         {
             PuzzleManager.instance.RestoreTank();
+        }
+
+        // 5. Reproducir el sonido de restauración
+        if (restoreSound != null)
+        {
+            AudioManager.Instance.PlaySound(restoreSound);
         }
     }
 }
