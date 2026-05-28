@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 2542567641322263864}
   - component: {fileID: 722211154577235807}
   - component: {fileID: 1358597095400612074}
-  - component: {fileID: 6908606256835133956}
   - component: {fileID: 2097153180427946810}
   m_Layer: 5
   m_Name: Botton Generico
@@ -272,27 +271,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6908606256835133956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3158405834469358825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df52b5558ab0bd54ca31e53695b409a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onHover:
-    m_PersistentCalls:
-      m_Calls: []
-  outHover:
-    m_PersistentCalls:
-      m_Calls: []
-  onClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!82 &2097153180427946810
 AudioSource:
   m_ObjectHideFlags: 0
